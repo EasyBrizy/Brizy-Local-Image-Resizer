@@ -138,8 +138,6 @@ class AppController extends AbstractController
             throw new BadRequestHttpException('Invalid file name');
         }
 
-        return new Response($mediaBinary, 200, [
-            'Content-Type' => (new MimeTypes())->getMimeType($path_parts['extension'])
-        ]);
+        return $this->getResponse($mediaBinary, (new MimeTypes())->getMimeType($path_parts['extension']));
     }
 }
