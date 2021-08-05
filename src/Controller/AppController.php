@@ -16,16 +16,17 @@ class AppController extends AbstractController
 {
     public function index(FilterManager $filterManager, $filter, $unique_name): Response
     {
-        $mediaBinary = $this->getMediaBinary($unique_name);
-        if ($filter == Imagine::ORIGINAL_FILTER_NAME) {
-            return $this->getOriginalMediaResponse($mediaBinary, $unique_name);
-        }
-
-        return $this->resize($filterManager, $mediaBinary, $unique_name, $filter);
+        return $this->resize($filterManager, $unique_name, $filter);
     }
 
-    private function resize(FilterManager $filterManager, $mediaBinary, $name, $filter): Response
+    private function resize(FilterManager $filterManager, $name, $filter): Response
     {
+        $mediaBinary = $this->getMediaBinary($name);
+
+        if ($filter == Imagine::ORIGINAL_FILTER_NAME) {
+            return $this->getOriginalMediaResponse($mediaBinary, $name);
+        }
+
         $imagine = $this->getImagine($mediaBinary, $filter);
         if (!in_array($imagine->getMimeType(), Imagine::resizeableMimeTypes())) {
             return $this->getOriginalMediaResponse($mediaBinary, $name);
@@ -118,7 +119,7 @@ class AppController extends AbstractController
         ]);
     }
 
-    private function getMediaBinary($unique_name)
+    private function getMediaBinary($unique_name): string
     {
         $mediaBinary = @file_get_contents($this->getParameter('brizy_media_url') . '/' . $unique_name);
         if (!$mediaBinary) {
