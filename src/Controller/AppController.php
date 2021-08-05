@@ -25,50 +25,73 @@ class AppController extends AbstractController
 
     private function resize(FilterManager $filterManager, $mediaBinary, $name, $filter): Response
     {
-        $filter = strtolower($filter);
-        $mediaInfo = getimagesizefromstring($mediaBinary);
-        $mimeType = $mediaInfo['mime'];
-
-        if (!in_array($mimeType, Imagine::resizeableMimeTypes())) {
+        $imagine = $this->getImagine($mediaBinary, $filter);
+        if (!in_array($imagine->getMimeType(), Imagine::resizeableMimeTypes())) {
             return $this->getOriginalMediaResponse($mediaBinary, $name);
         }
 
-        $extension = $this->getExtensionByMimeType($mimeType);
-        $originalSize = [$mediaInfo[0], $mediaInfo[1]];
-        parse_str($filter, $output);
-        $output = Imagine::normalizeOutput($output);
-        $cropType = $this->getCropType($filter);
-
         $configuration = $filterManager->getFilterConfiguration()->get('default');
-        $configuration = $this->setCustomConfiguration($configuration, $originalSize, $output, $cropType, $mimeType);
+        $configuration = $this->setCustomConfiguration($configuration, $imagine);
         $filterManager->getFilterConfiguration()->set($filter, $configuration);
 
-        $binary = new Binary($mediaBinary, $mimeType, $extension);
-        if ($cropType == Imagine::BASIC_CROP_TYPE && $output['iw'] > $originalSize[0] && ($output['ih'] == "any" || $output['ih'] == "*")) {
-            return $this->getResponse($binary->getContent(), $mimeType);
+        $binary = new Binary($mediaBinary, $imagine->getMimeType(), $this->getExtensionByMimeType($imagine->getMimeType()));
+        if ($imagine->getCropType() == Imagine::BASIC_CROP_TYPE && $imagine->getIw() > $imagine->getImageWidth() && ($imagine->getIh() == "any" || $imagine->getIh() == "*")) {
+            return $this->getResponse($binary->getContent(), $imagine->getMimeType());
         }
 
         $binary = $filterManager->applyFilter($binary, $filter);
 
-        return $this->getResponse($binary->getContent(), $mimeType);
+        return $this->getResponse($binary->getContent(), $imagine->getMimeType());
     }
 
-    private function setCustomConfiguration(array $configuration, array $originalSize, array $output, $cropType, $mimeType): array
+    private function getImagine($mediaBinary, $filter): Imagine
     {
-        $configuration['filters']['crop_filter_loader']['mimeType'] = $mimeType;
-        $configuration['filters']['crop_filter_loader']['originalSize'] = $originalSize;
-        $configuration['filters']['crop_filter_loader']['requestedData']['imageWidth'] = $output['iw'];
-        $configuration['filters']['crop_filter_loader']['requestedData']['imageHeight'] = $output['ih'];
-        switch ($cropType) {
+        $filter = strtolower($filter);
+        $imagine = new Imagine();
+
+        $mediaInfo = getimagesizefromstring($mediaBinary);
+        if (!$mediaInfo) {
+            $imagine
+                ->setMimeType('')
+                ->setImageWidth(0)
+                ->setImageHeight(0);
+        } else {
+            $imagine
+                ->setMimeType($mediaInfo['mime'])
+                ->setImageWidth($mediaInfo[0])
+                ->setImageHeight($mediaInfo[1]);
+        }
+
+        parse_str($filter, $output);
+        $output = Imagine::normalizeOutput($output);
+
+        $imagine
+            ->setIw($output['iw'])
+            ->setIh($output['ih'])
+            ->setOx($output['ox'] ?? 0)
+            ->setOy($output['oy'] ?? 0)
+            ->setCh($output['ch'] ?? 0)
+            ->setCw($output['cw'] ?? 0)
+            ->setCropType($this->getCropType($filter));
+
+        return $imagine;
+    }
+
+    private function setCustomConfiguration(array $configuration, Imagine $imagine): array
+    {
+        $configuration['filters']['crop_filter_loader']['mimeType'] = $imagine->getMimeType();
+        $configuration['filters']['crop_filter_loader']['originalSize'] = [$imagine->getImageWidth(), $imagine->getImageHeight()];
+        $configuration['filters']['crop_filter_loader']['requestedData']['imageWidth'] = $imagine->getIw();
+        $configuration['filters']['crop_filter_loader']['requestedData']['imageHeight'] = $imagine->getIh();
+        switch ($imagine->getCropType()) {
             case Imagine::BASIC_CROP_TYPE:
                 $configuration['filters']['crop_filter_loader']['is_advanced'] = false;
                 break;
-
             case Imagine::ADVANCED_CROP_TYPE:
-                $configuration['filters']['crop_filter_loader']['requestedData']['offsetX'] = $output['ox'];
-                $configuration['filters']['crop_filter_loader']['requestedData']['offsetY'] = $output['oy'];
-                $configuration['filters']['crop_filter_loader']['requestedData']['cropWidth'] = $output['cw'];
-                $configuration['filters']['crop_filter_loader']['requestedData']['cropHeight'] = $output['ch'];
+                $configuration['filters']['crop_filter_loader']['requestedData']['offsetX'] = $imagine->getOx();
+                $configuration['filters']['crop_filter_loader']['requestedData']['offsetY'] = $imagine->getOy();
+                $configuration['filters']['crop_filter_loader']['requestedData']['cropWidth'] = $imagine->getCh();
+                $configuration['filters']['crop_filter_loader']['requestedData']['cropHeight'] = $imagine->getCw();
                 $configuration['filters']['crop_filter_loader']['is_advanced'] = true;
                 break;
         }
