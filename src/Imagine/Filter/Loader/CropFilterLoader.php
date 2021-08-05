@@ -18,16 +18,10 @@ class CropFilterLoader implements LoaderInterface
     /**
      * {@inheritDoc}
      */
-    public function load(ImageInterface $image, array $options = array())
+    public function load(ImageInterface $image, array $options = array()): ImageInterface
     {
         if ($options['is_advanced'] === false) {
             list($imageWidth, $imageHeight) = array_values($options['requestedData']);
-            list($originalWidth, $originalHeight) = $options['originalSize'];
-
-            if ($imageWidth > $originalWidth && ($imageHeight == "any" || $imageHeight == "*")) {
-                return $image;
-            }
-
             return $this->relativeResize($image, $imageWidth, $imageHeight);
         }
 
@@ -39,7 +33,7 @@ class CropFilterLoader implements LoaderInterface
         return $filter->apply($image);
     }
 
-    private function relativeResize($image, $imageWidth, $imageHeight)
+    private function relativeResize($image, $imageWidth, $imageHeight): ImageInterface
     {
         $filter = new RelativeResize("widen", $imageWidth);
         return $filter->apply($image);

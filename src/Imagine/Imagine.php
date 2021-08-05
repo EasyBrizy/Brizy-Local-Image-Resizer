@@ -7,7 +7,7 @@ class Imagine
     const BASIC_CROP_TYPE    = 1;
     const ADVANCED_CROP_TYPE = 2;
 
-    const CACHE_CONTROL_RESPONSE_HEADER_VALUE = 'max-age=2592000, public';
+    const CACHE_CONTROL_RESPONSE_HEADER_VALUE = 'max-age=31104000, public';
 
     const ORIGINAL_FILTER_NAME = 'original';
 
