@@ -82,8 +82,8 @@ class AppController extends AbstractController
             case Imagine::ADVANCED_CROP_TYPE:
                 $configuration['filters']['crop_filter_loader']['requestedData']['offsetX'] = $imagine->getOx();
                 $configuration['filters']['crop_filter_loader']['requestedData']['offsetY'] = $imagine->getOy();
-                $configuration['filters']['crop_filter_loader']['requestedData']['cropWidth'] = $imagine->getCh();
-                $configuration['filters']['crop_filter_loader']['requestedData']['cropHeight'] = $imagine->getCw();
+                $configuration['filters']['crop_filter_loader']['requestedData']['cropWidth'] = $imagine->getCw();
+                $configuration['filters']['crop_filter_loader']['requestedData']['cropHeight'] = $imagine->getCh();
                 $configuration['filters']['crop_filter_loader']['is_advanced'] = true;
                 break;
         }
