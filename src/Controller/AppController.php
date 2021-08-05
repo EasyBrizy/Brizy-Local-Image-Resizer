@@ -10,6 +10,7 @@ use Mimey\MimeTypes;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AppController extends AbstractController
 {
@@ -34,11 +35,11 @@ class AppController extends AbstractController
         $configuration = $this->setCustomConfiguration($configuration, $imagine);
         $filterManager->getFilterConfiguration()->set($filter, $configuration);
 
-        $binary = new Binary($mediaBinary, $imagine->getMimeType(), $this->getExtensionByMimeType($imagine->getMimeType()));
         if ($imagine->getCropType() == Imagine::BASIC_CROP_TYPE && $imagine->getIw() > $imagine->getImageWidth() && ($imagine->getIh() == "any" || $imagine->getIh() == "*")) {
-            return $this->getResponse($binary->getContent(), $imagine->getMimeType());
+            return $this->getResponse($mediaBinary, $imagine->getMimeType());
         }
 
+        $binary = new Binary($mediaBinary, $imagine->getMimeType(), $this->getExtensionByMimeType($imagine->getMimeType()));
         $binary = $filterManager->applyFilter($binary, $filter);
 
         return $this->getResponse($binary->getContent(), $imagine->getMimeType());
@@ -47,25 +48,16 @@ class AppController extends AbstractController
     private function getImagine($mediaBinary, $filter): Imagine
     {
         $filter = strtolower($filter);
-        $imagine = new Imagine();
-
         $mediaInfo = getimagesizefromstring($mediaBinary);
-        if (!$mediaInfo) {
-            $imagine
-                ->setMimeType('')
-                ->setImageWidth(0)
-                ->setImageHeight(0);
-        } else {
-            $imagine
-                ->setMimeType($mediaInfo['mime'])
-                ->setImageWidth($mediaInfo[0])
-                ->setImageHeight($mediaInfo[1]);
-        }
 
         parse_str($filter, $output);
         $output = Imagine::normalizeOutput($output);
 
+        $imagine = new Imagine();
         $imagine
+            ->setMimeType($mediaInfo['mime'] ?? '')
+            ->setImageWidth($mediaInfo[0] ?? 0)
+            ->setImageHeight($mediaInfo[1] ?? 0)
             ->setIw($output['iw'])
             ->setIh($output['ih'])
             ->setOx($output['ox'] ?? 0)
@@ -128,7 +120,15 @@ class AppController extends AbstractController
 
     private function getMediaBinary($unique_name)
     {
-        return file_get_contents('https://s3.amazonaws.com/brizy.cloud/default_media/0041b7f7c67b70e3c737c3ce1f44c48cb4ee7a22.jpeg');
+        $mediaBinary = @file_get_contents($this->getParameter('brizy_media_url') . '/' . $unique_name);
+        if (!$mediaBinary) {
+            $mediaBinary = @file_get_contents($this->getParameter('brizy_default_media_url') . '/' . $unique_name);
+            if (!$mediaBinary) {
+                throw new NotFoundHttpException('Media was not found');
+            }
+        }
+
+        return $mediaBinary;
     }
 
     private function getOriginalMediaResponse($mediaBinary, $unique_name): Response

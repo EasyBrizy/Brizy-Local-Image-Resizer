@@ -10,6 +10,7 @@
     "ext-ctype": "*",
     "ext-iconv": "*",
     "liip/imagine-bundle": "^2.6",
+    "nelmio/cors-bundle": "^2.1",
     "ralouphie/mimey": "^2.1",
     "symfony/console": "*",
     "symfony/dotenv": "*",
