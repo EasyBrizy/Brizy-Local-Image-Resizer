@@ -1,8 +1,8 @@
 <?php
 
-namespace App;
+namespace App\Imagine;
 
-class Media
+class Imagine
 {
     const BASIC_CROP_TYPE    = 1;
     const ADVANCED_CROP_TYPE = 2;

@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Media;
+use App\Imagine\Imagine;
 use Liip\ImagineBundle\Imagine\Filter\FilterManager;
 use Liip\ImagineBundle\Model\Binary;
 use Mimey\MimeMappingBuilder;
@@ -16,7 +16,7 @@ class AppController extends AbstractController
     public function index(FilterManager $filterManager, $filter, $unique_name): Response
     {
         $mediaBinary = $this->getMediaBinary($unique_name);
-        if ($filter == Media::ORIGINAL_FILTER_NAME) {
+        if ($filter == Imagine::ORIGINAL_FILTER_NAME) {
             return $this->getOriginalMediaResponse($mediaBinary, $unique_name);
         }
 
@@ -29,14 +29,14 @@ class AppController extends AbstractController
         $mediaInfo = getimagesizefromstring($mediaBinary);
         $mimeType = $mediaInfo['mime'];
 
-        if (!in_array($mimeType, Media::resizeableMimeTypes())) {
+        if (!in_array($mimeType, Imagine::resizeableMimeTypes())) {
             return $this->getOriginalMediaResponse($mediaBinary, $name);
         }
 
         $extension = $this->getExtensionByMimeType($mimeType);
         $originalSize = [$mediaInfo[0], $mediaInfo[1]];
         parse_str($filter, $output);
-        $output = Media::normalizeOutput($output);
+        $output = Imagine::normalizeOutput($output);
         $cropType = $this->getCropType($filter);
 
         $configuration = $filterManager->getFilterConfiguration()->get('default');
@@ -44,7 +44,7 @@ class AppController extends AbstractController
         $filterManager->getFilterConfiguration()->set($filter, $configuration);
 
         $binary = new Binary($mediaBinary, $mimeType, $extension);
-        if ($cropType == Media::BASIC_CROP_TYPE && $output['iw'] > $originalSize[0] && ($output['ih'] == "any" || $output['ih'] == "*")) {
+        if ($cropType == Imagine::BASIC_CROP_TYPE && $output['iw'] > $originalSize[0] && ($output['ih'] == "any" || $output['ih'] == "*")) {
             return $this->getResponse($binary->getContent(), $mimeType);
         }
 
@@ -60,11 +60,11 @@ class AppController extends AbstractController
         $configuration['filters']['crop_filter_loader']['requestedData']['imageWidth'] = $output['iw'];
         $configuration['filters']['crop_filter_loader']['requestedData']['imageHeight'] = $output['ih'];
         switch ($cropType) {
-            case Media::BASIC_CROP_TYPE:
+            case Imagine::BASIC_CROP_TYPE:
                 $configuration['filters']['crop_filter_loader']['is_advanced'] = false;
                 break;
 
-            case Media::ADVANCED_CROP_TYPE:
+            case Imagine::ADVANCED_CROP_TYPE:
                 $configuration['filters']['crop_filter_loader']['requestedData']['offsetX'] = $output['ox'];
                 $configuration['filters']['crop_filter_loader']['requestedData']['offsetY'] = $output['oy'];
                 $configuration['filters']['crop_filter_loader']['requestedData']['cropWidth'] = $output['cw'];
@@ -85,10 +85,10 @@ class AppController extends AbstractController
 
     private function getCropType($filter): int
     {
-        if (preg_match(Media::BASIC_FILTER_PATTERN, $filter)) {
-            return Media::BASIC_CROP_TYPE;
-        } elseif (preg_match(Media::ADVANCED_FILTER_PATTERN, $filter)) {
-            return Media::ADVANCED_CROP_TYPE;
+        if (preg_match(Imagine::BASIC_FILTER_PATTERN, $filter)) {
+            return Imagine::BASIC_CROP_TYPE;
+        } elseif (preg_match(Imagine::ADVANCED_FILTER_PATTERN, $filter)) {
+            return Imagine::ADVANCED_CROP_TYPE;
         } else {
             throw new BadRequestHttpException("Invalid size format.");
         }
@@ -99,7 +99,7 @@ class AppController extends AbstractController
         return new Response($content, 200, [
             'Content-Type' => $content_type,
             'Content-Length' => strlen($content),
-            'Cache-Control' => Media::CACHE_CONTROL_RESPONSE_HEADER_VALUE
+            'Cache-Control' => Imagine::CACHE_CONTROL_RESPONSE_HEADER_VALUE
         ]);
     }
 
