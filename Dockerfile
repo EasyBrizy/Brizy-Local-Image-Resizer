@@ -3,7 +3,6 @@ FROM php:7.4-fpm as base
 RUN apt-get update \
     && apt-get install -y wget unzip nano sudo \
     && apt-get install -y nginx \
-    && apt-get install -y imagemagick \
     && apt-get install -y \
         libzip-dev libfreetype6-dev libjpeg62-turbo-dev libmcrypt-dev libpng-dev libicu-dev libpq-dev libonig-dev libmagickwand-dev \
     && docker-php-ext-install -j$(nproc) zip mbstring json gd iconv pcntl intl opcache \
@@ -14,6 +13,8 @@ RUN pecl install imagick \
 
 RUN cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 RUN sed -i "s/^\(upload_max_filesize\).*/\1 = 5M/" "$PHP_INI_DIR/php.ini"
+
+COPY docker-image/www.conf /usr/local/etc/php-fpm.d/www.conf
 
 # disable php access logs, nginx access logs are enough
 RUN sed -i "s/^\(access.log\).*/\1 = \/dev\/null/" /usr/local/etc/php-fpm.d/docker.conf
