@@ -1,4 +1,4 @@
 commonLabels:
-  project: brizy-api
+  project: brizy-image-resizer
 resources:
   - autoscalers.yaml

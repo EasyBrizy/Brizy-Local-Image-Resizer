@@ -2,12 +2,12 @@
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: brizy-сloud-image-resizer-autoscaling
+  name: brizy-image-resizer-autoscaling
 spec:
   scaleTargetRef:
     apiVersion: apps/v2beta1v1
     kind: Deployment
-    name: brizy-сloud-image-resizer-deployment
+    name: brizy-image-resizer-deployment
   minReplicas: 1
   maxReplicas: 20
   metrics:

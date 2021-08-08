@@ -1,5 +1,5 @@
 commonLabels:
-  project: brizy-сloud-image-resizer
+  project: brizy-image-resizer
 resources:
   - secrets.yaml
   - configs.yaml
