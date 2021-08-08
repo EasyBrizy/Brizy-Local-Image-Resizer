@@ -1,0 +1,14 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: brizy-сloud-image-resizer-deployment
+spec:
+  template:
+    spec:
+      containers:
+        - name: brizy-api
+          image: *docker-image
+      imagePullSecrets: # https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+        - name: regcred
+

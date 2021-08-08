@@ -1,0 +1,8 @@
+commonLabels:
+  env: prod
+bases:
+  - ../../base
+  - ./base
+patches:
+  - secrets.patch.yaml
+  - deployments.patch.yaml

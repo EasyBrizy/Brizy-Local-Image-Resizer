@@ -14,7 +14,12 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AppController extends AbstractController
 {
-    public function index(FilterManager $filterManager, $filter, $unique_name): Response
+    public function index(): Response
+    {
+        return new Response('');
+    }
+
+    public function media(FilterManager $filterManager, $filter, $unique_name): Response
     {
         return $this->resize($filterManager, $unique_name, $filter);
     }

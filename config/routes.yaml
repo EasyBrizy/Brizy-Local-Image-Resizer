@@ -1,4 +1,9 @@
 index:
-  path: /media/{filter}/{unique_name}
+  path: /
   controller: App\Controller\AppController::index
+  methods: GET
+
+media:
+  path: /media/{filter}/{unique_name}
+  controller: App\Controller\AppController::media
   methods: GET

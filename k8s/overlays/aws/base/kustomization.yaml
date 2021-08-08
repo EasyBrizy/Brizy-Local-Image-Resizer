@@ -1,0 +1,5 @@
+commonLabels:
+  project: brizy-api
+resources:
+  - ingress.yaml
+  - autoscalers.yaml

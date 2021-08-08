@@ -1,0 +1,7 @@
+commonLabels:
+  project: brizy-сloud-image-resizer
+resources:
+  - secrets.yaml
+  - configs.yaml
+  - deployments.yaml
+  - services.yaml
