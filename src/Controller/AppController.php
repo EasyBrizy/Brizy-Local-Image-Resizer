@@ -24,9 +24,18 @@ class AppController extends AbstractController
         return $this->resize($filterManager, $unique_name, $filter);
     }
 
-    private function resize(FilterManager $filterManager, $name, $filter): Response
+    public function mediaBinary(FilterManager $filterManager, $filter, $unique_name): Response
     {
-        $mediaBinary = $this->getMediaBinary($name);
+        $mediaBinary = file_get_contents('php://input');
+
+        return $this->resize($filterManager, $unique_name, $filter, $mediaBinary);
+    }
+
+    private function resize(FilterManager $filterManager, $name, $filter, $mediaBinary = null): Response
+    {
+        if (!$mediaBinary) {
+            $mediaBinary = $this->getMediaBinary($name);
+        }
 
         if ($filter == Imagine::ORIGINAL_FILTER_NAME) {
             return $this->getOriginalMediaResponse($mediaBinary, $name);
