@@ -13,3 +13,5 @@
 ###> liip/imagine-bundle ###
 /public/media/cache/
 ###< liip/imagine-bundle ###
+
+/docker-compose.override.yaml
