@@ -5,7 +5,7 @@ services:
     container_name: image_resizer
     image: image_resizer:latest
     environment:
-        APP_ENV: 'dev'
+      APP_ENV: 'dev'
     extra_hosts:
       - "host.docker.internal:host-gateway"
     build:

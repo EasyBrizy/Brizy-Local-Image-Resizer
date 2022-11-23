@@ -1,14 +1,4 @@
 index:
   path: /
   controller: App\Controller\AppController::index
-  methods: GET
-
-media:
-  path: /media/{filter}/{unique_name}
-  controller: App\Controller\AppController::media
-  methods: GET
-
-mediaBinary:
-  path: /media/binary/{filter}/{unique_name}
-  controller: App\Controller\AppController::mediaBinary
   methods: POST
