@@ -21,7 +21,7 @@ class AppController extends AbstractController
         return new Response('');
     }
 
-    public function filter(Request $request, FilterManager $filterManager)
+    public function resize(Request $request, FilterManager $filterManager)
     {
         $form = $this->createForm(ImagineType::class);
         $form->handleRequest($request);
@@ -31,7 +31,7 @@ class AppController extends AbstractController
 
             $this->registerShutdownFunction($file->getPathname());
             try {
-                return $this->resize($filterManager, $file->getFilename(), $data['filter'], file_get_contents($file->getPathname()));
+                return $this->innerResize($filterManager, $file->getFilename(), $data['filter'], file_get_contents($file->getPathname()));
             } catch (BadRequestHttpException $e) {
                 return new JsonResponse(['message' => $e->getMessage()], 400);
             }
@@ -56,7 +56,7 @@ class AppController extends AbstractController
         }, $file_path);
     }
 
-    private function resize(FilterManager $filterManager, $name, $filter, $mediaBinary): Response
+    private function innerResize(FilterManager $filterManager, $name, $filter, $mediaBinary): Response
     {
         if ($filter == Imagine::ORIGINAL_FILTER_NAME) {
             return $this->getOriginalMediaResponse($mediaBinary, $name);

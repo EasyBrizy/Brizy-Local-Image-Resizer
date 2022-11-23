@@ -3,7 +3,7 @@ index:
   controller: App\Controller\AppController::index
   methods: GET
 
-filter:
-  path: /filter
-  controller: App\Controller\AppController::filter
+resize:
+  path: /resize
+  controller: App\Controller\AppController::resize
   methods: POST
