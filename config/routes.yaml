@@ -1,4 +1,9 @@
 index:
   path: /
   controller: App\Controller\AppController::index
+  methods: GET
+
+filter:
+  path: /filter
+  controller: App\Controller\AppController::filter
   methods: POST

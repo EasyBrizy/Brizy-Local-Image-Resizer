@@ -16,7 +16,12 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class AppController extends AbstractController
 {
-    public function index(Request $request, FilterManager $filterManager)
+    public function index()
+    {
+        return new Response('');
+    }
+
+    public function filter(Request $request, FilterManager $filterManager)
     {
         $form = $this->createForm(ImagineType::class);
         $form->handleRequest($request);
