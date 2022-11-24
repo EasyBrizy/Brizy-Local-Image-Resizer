@@ -5,6 +5,7 @@
 
 # Usage
 
+### Resize endpoint
 ```
 POST http://CONTAINER_HOST/resize
 Content-Type: multipart/form-data; boundary=WebAppBoundary
@@ -20,4 +21,9 @@ Content-Disposition: form-data; name="filter";
 
 iW=400&iH=any
 --WebAppBoundary--
+```
+
+### Get an image by url params
+```
+GET http://CONTAINER_HOST/media/iW=1000&iH=any/d03-phones-mock/image.png
 ```
