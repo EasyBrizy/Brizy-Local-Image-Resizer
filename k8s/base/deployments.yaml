@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: brizy-image-resizer
-          image: 137169526694.dkr.ecr.us-east-1.amazonaws.com/brizy-cloud-image-resizer:latest
+          image: image-resizer:latest
           resources:
             requests:
               memory: "1024Mi"

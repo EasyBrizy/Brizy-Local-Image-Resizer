@@ -2,41 +2,62 @@
 
 namespace App\Controller;
 
+use App\Form\ImagineType;
 use App\Imagine\Imagine;
 use Liip\ImagineBundle\Imagine\Filter\FilterManager;
 use Liip\ImagineBundle\Model\Binary;
 use Mimey\MimeMappingBuilder;
 use Mimey\MimeTypes;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AppController extends AbstractController
 {
-    public function index(): Response
+    public function index()
     {
         return new Response('');
     }
 
-    public function media(FilterManager $filterManager, $filter, $unique_name): Response
+    public function resize(Request $request, FilterManager $filterManager)
     {
-        return $this->resize($filterManager, $unique_name, $filter);
-    }
+        $form = $this->createForm(ImagineType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $file = $form->get('image')->getData();
 
-    public function mediaBinary(FilterManager $filterManager, $filter, $unique_name): Response
-    {
-        $mediaBinary = file_get_contents('php://input');
-
-        return $this->resize($filterManager, $unique_name, $filter, $mediaBinary);
-    }
-
-    private function resize(FilterManager $filterManager, $name, $filter, $mediaBinary = null): Response
-    {
-        if (!$mediaBinary) {
-            $mediaBinary = $this->getMediaBinary($name);
+            $this->registerShutdownFunction($file->getPathname());
+            try {
+                return $this->innerResize($filterManager, $file->getFilename(), $data['filter'], file_get_contents($file->getPathname()));
+            } catch (BadRequestHttpException $e) {
+                return new JsonResponse(['message' => $e->getMessage()], 400);
+            }
         }
 
+        $errors = [];
+        foreach ($form->getErrors(true) as $error) {
+            $errors['message'][$error->getOrigin()->getName()] = $error->getMessage();
+        }
+
+        if (empty($errors)) {
+            $errors['message'] = 'Invalid form data';
+        }
+
+        return new JsonResponse($errors, 400);
+    }
+
+    private function registerShutdownFunction($file_path)
+    {
+        register_shutdown_function(function ($file_path) {
+            @unlink($file_path); // remove tmp file from local filesystem
+        }, $file_path);
+    }
+
+    private function innerResize(FilterManager $filterManager, $name, $filter, $mediaBinary): Response
+    {
         if ($filter == Imagine::ORIGINAL_FILTER_NAME) {
             return $this->getOriginalMediaResponse($mediaBinary, $name);
         }
@@ -68,8 +89,7 @@ class AppController extends AbstractController
         parse_str($filter, $output);
         $output = Imagine::normalizeOutput($output);
 
-        $imagine = new Imagine();
-        $imagine
+        return (new Imagine())
             ->setMimeType($mediaInfo['mime'] ?? '')
             ->setImageWidth($mediaInfo[0] ?? 0)
             ->setImageHeight($mediaInfo[1] ?? 0)
@@ -80,8 +100,6 @@ class AppController extends AbstractController
             ->setCh($output['ch'] ?? 0)
             ->setCw($output['cw'] ?? 0)
             ->setCropType($this->getCropType($filter));
-
-        return $imagine;
     }
 
     private function setCustomConfiguration(array $configuration, Imagine $imagine): array
@@ -128,22 +146,8 @@ class AppController extends AbstractController
     {
         return new Response($content, 200, [
             'Content-Type' => $content_type,
-            'Content-Length' => strlen($content),
-            'Cache-Control' => Imagine::CACHE_CONTROL_RESPONSE_HEADER_VALUE
+            'Content-Length' => strlen($content)
         ]);
-    }
-
-    private function getMediaBinary($unique_name): string
-    {
-        $mediaBinary = @file_get_contents($this->getParameter('brizy_media_url') . '/' . $unique_name);
-        if (!$mediaBinary) {
-            $mediaBinary = @file_get_contents($this->getParameter('brizy_default_media_url') . '/' . $unique_name);
-            if (!$mediaBinary) {
-                throw new NotFoundHttpException('Media was not found');
-            }
-        }
-
-        return $mediaBinary;
     }
 
     private function getOriginalMediaResponse($mediaBinary, $unique_name): Response
