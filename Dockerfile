@@ -13,20 +13,10 @@ RUN composer install --ignore-platform-reqs --prefer-dist --no-interaction --no-
 
 FROM php:7.4-fpm as base
 RUN apt-get update && apt-get install -y \
-        libfreetype6-dev \
-        libjpeg62-turbo-dev \
-        libpng-dev \
-        libicu-dev \
-        cron \
-        libmagickwand-dev \
+        libfreetype6-dev libjpeg62-turbo-dev libpng-dev libicu-dev libmagickwand-dev git wget libzip-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd
+    && docker-php-ext-install -j$(nproc) gd zip pcntl intl opcache
 
-RUN apt-get update && apt-get install -y  git wget libzip-dev
-RUN docker-php-ext-install zip && \
-    docker-php-ext-install pcntl && \
-    docker-php-ext-install opcache && \
-    docker-php-ext-install intl
 RUN apt-get install -y nginx \
         && ln -sf /dev/stdout /var/log/nginx/access.log \
         && ln -sf /dev/stderr /var/log/nginx/error.log \
