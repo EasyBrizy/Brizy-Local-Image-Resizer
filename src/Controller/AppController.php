@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AppController extends AbstractController
 {
@@ -146,7 +147,8 @@ class AppController extends AbstractController
     {
         return new Response($content, 200, [
             'Content-Type' => $content_type,
-            'Content-Length' => strlen($content)
+            'Content-Length' => strlen($content),
+            'Cache-Control' => Imagine::CACHE_CONTROL_RESPONSE_HEADER_VALUE
         ]);
     }
 
@@ -158,5 +160,28 @@ class AppController extends AbstractController
         }
 
         return $this->getResponse($mediaBinary, (new MimeTypes())->getMimeType($path_parts['extension']));
+    }
+
+    public function media(FilterManager $filterManager, $filter, $uid, $canonical_name)
+    {
+        $path_parts = pathinfo($canonical_name);
+        if (!isset($path_parts['extension']) || $path_parts['extension'] == '') {
+            throw new BadRequestHttpException('Invalid file name');
+        }
+
+        $unique_name = $uid . '.' . $path_parts['extension'];
+        $mediaBinary = $this->getMediaBinary($unique_name);
+
+        return $this->innerResize($filterManager, $canonical_name, $filter, $mediaBinary);
+    }
+
+    private function getMediaBinary($unique_name): string
+    {
+        $mediaBinary = @file_get_contents($this->getParameter('brizy_default_media_url') . '/' . $unique_name);
+        if (!$mediaBinary) {
+            throw new NotFoundHttpException('Media was not found');
+        }
+
+        return $mediaBinary;
     }
 }
