@@ -1,8 +1,8 @@
 commonLabels:
-  env: prod
+  project: brizy-image-resizer
 bases:
   - ../../base
   - ./base
 patches:
-  - secrets.patch.yaml
   - deployments.patch.yaml
+  - configs.patch.yaml

@@ -4,11 +4,9 @@ kind: Deployment
 metadata:
   name: brizy-image-resizer-deployment
 spec:
+  replicas: 1
   template:
     spec:
       containers:
         - name: brizy-image-resizer
-          image: *docker-image
-      imagePullSecrets: # https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
-        - name: regcred
-
+          image: ...
