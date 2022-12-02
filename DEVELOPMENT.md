@@ -15,6 +15,13 @@ Once you've installed Docker && Docker Compose, open Terminal and run the follow
 
 You should now have a running server! Visit ```localhost:80``` in your browser.
 
+
+After you have successfully gone through the development process you are probably going to start a production deployment.
+
+- ```docker build --target=production --tag=image-resizer:latest .```
+- ```docker-compose -f docker-compose.production.yaml up -d```
+
+
 ## READMEs
 
 For more info about working with this service, check out these READMEs:
