@@ -1,13 +1,10 @@
-# Install for Dev
+# Image Resizer
 
-- ```docker run --rm -v $(pwd):/app composer install```
-- ```docker-composer up -d```
+Image Resizer is a tool for resizing an uploaded image.
 
-# Usage
-
-### Resize endpoint
+### Resizing an image by a binary file
 ```
-POST http://CONTAINER_HOST/resize
+POST http://localhost:80/resize
 Content-Type: multipart/form-data; boundary=WebAppBoundary
 
 --WebAppBoundary
@@ -23,7 +20,7 @@ iW=400&iH=any
 --WebAppBoundary--
 ```
 
-### Get an image by url params
+### Using as a ```getMedia``` url in [Editor Configuration](https://github.com/EasyBrizy/Brizy-Local/tree/master/packages/demo)
 ```
-GET http://CONTAINER_HOST/media/iW=1000&iH=any/d03-phones-mock/image.png
+http://localhost:80/media
 ```
