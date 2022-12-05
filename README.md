@@ -2,6 +2,8 @@
 
 Image Resizer is a tool for resizing an uploaded image.
 
+[![](https://i.imgur.com/wrO4h6S.png)](https://youtu.be/iKaLF9N-QRg)
+
 ## Getting started
 
 This document describes the process for running this application on your local computer.
