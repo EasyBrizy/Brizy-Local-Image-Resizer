@@ -10,6 +10,10 @@ This document describes the process for running this application on your local c
 - `docker`
 - `docker-compose`
 
+### Deployment
+
+After you have successfully gone through the development process you are probably going to start a deployment.
+
 Stops containers and removes containers, networks, volumes, and images for this project
 
 - ```docker-compose down --remove-orphans```
@@ -26,10 +30,6 @@ services:
     environment:
       ORIGIN_MEDIA_URL: 'https://host/path/to/images'
 ```
-
-### Deployment
-
-After you have successfully gone through the development process you are probably going to start a production deployment.
 
 - ```docker build --target=production --tag=image_resizer:latest .```
 - ```docker-compose -f docker-compose.production.yaml -f docker-compose.override.yaml up -d```
