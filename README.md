@@ -6,7 +6,7 @@ Image Resizer is a tool for resizing an uploaded image.
 
 This document describes the process for running this application on your local computer.
 
-### Check if you have installed
+#### Check if you have installed
 - `docker`
 - `docker-compose`
 
@@ -27,7 +27,7 @@ services:
       ORIGIN_MEDIA_URL: 'https://host/path/to/images'
 ```
 
-#### Deployment
+### Deployment
 
 After you have successfully gone through the development process you are probably going to start a production deployment.
 
