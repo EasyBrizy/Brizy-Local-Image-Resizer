@@ -8,7 +8,7 @@ This document describes the process for running this application on your local c
 
 Once you've installed Docker && Docker Compose, open Terminal and run the following:
 
-- ```docker run --rm -v $(pwd):/app composer install```
+- ```docker run --rm -v $(pwd):/app composer install --ignore-platform-reqs```
 - ```docker-compose -f docker-compose.yaml up -d```
 
 You should now have a running server! Visit ```localhost:80``` in your browser.
