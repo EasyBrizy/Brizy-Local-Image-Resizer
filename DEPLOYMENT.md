@@ -10,7 +10,7 @@ Stops containers and removes containers, networks, volumes, and images for this 
 
 - ```docker-compose down --remove-orphans```
 
-#### Development
+#### Development mode
 
 Once you've installed Docker && Docker Compose, open Terminal and run the following:
 
@@ -21,7 +21,7 @@ Make sure ```var/log``` && ```var/cache``` are writable
 
 You should now have a running server! Visit ```localhost:7788``` in your browser.
 
-#### Production 
+#### Production mode
 
 After you have successfully gone through the development process you are probably going to start a production deployment.
 
