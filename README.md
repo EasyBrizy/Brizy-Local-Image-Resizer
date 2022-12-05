@@ -37,8 +37,6 @@ Once you've installed Docker && Docker Compose, open Terminal and run the follow
 
 Make sure ```var/log``` && ```var/cache``` are writable
 
-You should now have a running server! Visit ```localhost:7788``` in your browser.
-
 #### Production mode
 
 After you have successfully gone through the development process you are probably going to start a production deployment.
@@ -46,10 +44,11 @@ After you have successfully gone through the development process you are probabl
 - ```docker build --target=production --tag=image-resizer:latest .```
 - ```docker-compose -f docker-compose.production.yaml -f docker-compose.override.yaml up -d```
 
+### Using Image Resizer
+
 You should now have a running server! Visit ```localhost:7788``` in your browser.
 
-
-### Using as a ```getMedia``` url in [Editor Configuration](https://github.com/EasyBrizy/Brizy-Local/tree/master/packages/demo)
+#### Using as a ```getMedia``` url in [Editor Configuration](https://github.com/EasyBrizy/Brizy-Local/tree/master/packages/demo)
 
 ```
 http://localhost:7788/media
