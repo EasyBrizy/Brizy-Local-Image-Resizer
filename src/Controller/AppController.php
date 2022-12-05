@@ -19,7 +19,7 @@ class AppController extends AbstractController
 {
     public function index()
     {
-        return new Response('');
+        return new Response('Image Resizer');
     }
 
     public function resize(Request $request, FilterManager $filterManager)
