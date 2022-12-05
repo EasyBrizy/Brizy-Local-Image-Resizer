@@ -48,7 +48,7 @@ After you have successfully gone through the development process you are probabl
 
 You should now have a running server! Visit ```localhost:7788``` in your browser.
 
-#### Using as a ```getMedia``` url in [Editor Configuration](https://github.com/EasyBrizy/Brizy-Local/tree/master/packages/demo)
+##### Using as a ```getMedia``` url in [Editor Configuration](https://github.com/EasyBrizy/Brizy-Local/tree/master/packages/demo)
 
 ```
 http://localhost:7788/media
