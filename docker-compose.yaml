@@ -6,8 +6,8 @@ services:
     image: image_resizer:latest
     environment:
       APP_ENV: 'dev'
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    ports:
+      - "7788:80"
     build:
       context: ./
     volumes:

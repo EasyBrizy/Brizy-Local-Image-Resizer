@@ -11,14 +11,17 @@ Once you've installed Docker && Docker Compose, open Terminal and run the follow
 - ```docker run --rm -v $(pwd):/app composer install --ignore-platform-reqs```
 - ```docker-compose -f docker-compose.yaml up -d```
 
-You should now have a running server! Visit ```localhost:80``` in your browser.
+Make sure ```var/log``` && ```var/cache``` are writable
+
+You should now have a running server! Visit ```localhost:7788``` in your browser.
 
 
-After you have successfully gone through the development process you are probably going to start a production deployment.
+After you have successfully gone through the development process you are probably going to start a ```production``` deployment.
 
 - ```docker build --target=production --tag=image-resizer:latest .```
 - ```docker-compose -f docker-compose.production.yaml up -d```
 
+You should now have a running server! Visit ```localhost:7789``` in your browser.
 
 ## READMEs
 

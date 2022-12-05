@@ -6,3 +6,5 @@ services:
     image: image_resizer:latest
     environment:
       APP_ENV: 'prod'
+    ports:
+      - "7789:80"
