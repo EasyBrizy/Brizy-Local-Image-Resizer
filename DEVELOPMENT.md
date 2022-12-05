@@ -1,8 +1,6 @@
-# Development
+## Getting started
 
 This document describes the process for running this application on your local computer.
-
-## Getting started
 
 ### Check if you have installed
 - `docker`
