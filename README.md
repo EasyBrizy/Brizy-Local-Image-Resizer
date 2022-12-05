@@ -2,25 +2,41 @@
 
 Image Resizer is a tool for resizing an uploaded image.
 
-### Resizing an image by a binary file
-```
-POST http://localhost:80/resize
-Content-Type: multipart/form-data; boundary=WebAppBoundary
+## Getting started
 
---WebAppBoundary
-Content-Disposition: form-data; name="image"; filename="test.png"
+This document describes the process for running this application on your local computer.
 
-< ./path/to/file/test.png
---WebAppBoundary--
+### Check if you have installed
+- `docker`
+- `docker compose`
 
---WebAppBoundary
-Content-Disposition: form-data; name="filter";
+Stops containers and removes containers, networks, volumes, and images for this project
 
-iW=400&iH=any
---WebAppBoundary--
-```
+- ```docker-compose down --remove-orphans```
+
+#### Development mode
+
+Once you've installed Docker && Docker Compose, open Terminal and run the following:
+
+- ```docker run --rm -v $(pwd):/app composer install --ignore-platform-reqs```
+- ```docker-compose -f docker-compose.yaml up -d```
+
+Make sure ```var/log``` && ```var/cache``` are writable
+
+You should now have a running server! Visit ```localhost:7788``` in your browser.
+
+#### Production mode
+
+After you have successfully gone through the development process you are probably going to start a production deployment.
+
+- ```docker build --target=production --tag=image-resizer:latest .```
+- ```docker-compose -f docker-compose.production.yaml up -d```
+
+You should now have a running server! Visit ```localhost:7789``` in your browser.
+
 
 ### Using as a ```getMedia``` url in [Editor Configuration](https://github.com/EasyBrizy/Brizy-Local/tree/master/packages/demo)
+
 ```
-http://localhost:80/media
+http://localhost:7789/media
 ```

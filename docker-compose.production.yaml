@@ -6,5 +6,6 @@ services:
     image: image_resizer:latest
     environment:
       APP_ENV: 'prod'
+      ORIGIN_MEDIA_URL: 'http://images.host/path/to/images'
     ports:
       - "7789:80"

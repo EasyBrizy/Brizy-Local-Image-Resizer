@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
-  site:
-    build:
+  image_resizer:
+    environment:
+      ORIGIN_MEDIA_URL: 'http://images.host/path/to/images'
 
