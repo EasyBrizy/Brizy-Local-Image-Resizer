@@ -164,12 +164,7 @@ class AppController extends AbstractController
 
     public function media(FilterManager $filterManager, $filter, $uid, $canonical_name)
     {
-        $path_parts = pathinfo($canonical_name);
-        if (!isset($path_parts['extension']) || $path_parts['extension'] == '') {
-            throw new BadRequestHttpException('Invalid file name');
-        }
-
-        $unique_name = $uid . '.' . $path_parts['extension'];
+        $unique_name = $uid . '/' . $canonical_name;
         $mediaBinary = $this->getMediaBinary($unique_name);
 
         return $this->innerResize($filterManager, $canonical_name, $filter, $mediaBinary);
