@@ -162,10 +162,9 @@ class AppController extends AbstractController
         return $this->getResponse($mediaBinary, (new MimeTypes())->getMimeType($path_parts['extension']));
     }
 
-    public function media(FilterManager $filterManager, $filter, $uid, $canonical_name)
+    public function media(FilterManager $filterManager, $filter, $canonical_name)
     {
-        $unique_name = $uid . '/' . $canonical_name;
-        $mediaBinary = $this->getMediaBinary($unique_name);
+        $mediaBinary = $this->getMediaBinary($canonical_name);
 
         return $this->innerResize($filterManager, $canonical_name, $filter, $mediaBinary);
     }

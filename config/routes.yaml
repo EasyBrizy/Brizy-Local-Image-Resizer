@@ -9,6 +9,6 @@ resize:
   methods: POST
 
 media:
-  path: /media/{filter}/{uid}/{canonical_name}
+  path: /media/{filter}/{canonical_name}
   controller: App\Controller\AppController::media
   methods: GET
