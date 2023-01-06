@@ -171,7 +171,7 @@ class AppController extends AbstractController
 
     private function getMediaBinary($unique_name): string
     {
-        $mediaBinary = @file_get_contents($this->getParameter('origin_media_url') . '/' . $unique_name);
+        $mediaBinary = @file_get_contents($this->getParameter('origin_media_url') . '/' . urlencode($unique_name));
         if (!$mediaBinary) {
             throw new NotFoundHttpException('Media was not found');
         }

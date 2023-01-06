@@ -36,6 +36,11 @@ spec:
                 configMapKeyRef:
                   name: brizy-image-resizer-config
                   key: symfony-app-secret
+            - name: ORIGIN_MEDIA_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: brizy-image-resizer-config
+                  key: origin-media-url
           livenessProbe:
             httpGet:
               port: 80
