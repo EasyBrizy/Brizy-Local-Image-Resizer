@@ -12,3 +12,8 @@ media:
   path: /media/{filter}/{canonical_name}
   controller: App\Controller\AppController::media
   methods: GET
+
+mediaCanonical:
+  path: /media/{filter}/{unique_name}/{canonical_name}
+  controller: App\Controller\AppController::mediaCanonical
+  methods: GET

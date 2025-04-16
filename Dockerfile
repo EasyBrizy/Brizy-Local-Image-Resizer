@@ -40,6 +40,7 @@ WORKDIR /project
 
 ARG UID=1000
 ARG PHP_FPM_INI_DIR="/usr/local/etc/php"
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
 COPY --from=stage_composer /vendor ./
 COPY . ./

@@ -1,5 +1,5 @@
 ---
-apiVersion: autoscaling/v2beta1
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: brizy-image-resizer-autoscaling
@@ -14,9 +14,13 @@ spec:
     - type: Resource
       resource:
         name: cpu
-        targetAverageUtilization: 60
+        target:
+          type: Utilization
+          averageUtilization: 80
     - type: Resource
       resource:
         name: memory
-        targetAverageUtilization: 60
+        target:
+          type: Utilization
+          averageUtilization: 80
 
